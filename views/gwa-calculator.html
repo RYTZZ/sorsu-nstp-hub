@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GWA Calculator - SorSU NSTP Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+      color: var(--secondary-white);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .page-header h1 {
+      color: var(--secondary-white);
+    }
+    
+    .gwa-section {
+      padding: 3rem 0;
+      min-height: 70vh;
+    }
+    
+    .gwa-calculator {
+      background-color: var(--bg-primary);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 2rem;
+    }
+    
+    .gwa-info {
+      background-color: #d1ecf1;
+      border-left: 4px solid var(--status-info);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+    }
+    
+    .gwa-display {
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, var(--secondary-light), var(--bg-primary));
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+    
+    .gwa-value {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--primary-orange);
+      margin: 1rem 0;
+    }
+    
+    .qualification-badge {
+      font-size: 1.5rem;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      display: inline-block;
+      font-weight: 700;
+      margin-top: 1rem;
+    }
+    
+    .qualified {
+      background-color: var(--status-success);
+      color: var(--secondary-white);
+    }
+    
+    .disqualified {
+      background-color: var(--status-danger);
+      color: var(--secondary-white);
+    }
+    
+    .result-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-overlay);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    
+    .result-popup.active {
+      display: flex;
+    }
+    
+    .popup-content {
+      background-color: var(--bg-primary);
+      border-radius: 12px;
+      padding: 3rem;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      animation: popupSlideIn 0.3s ease;
+    }
+    
+    @keyframes popupSlideIn {
+      from {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .popup-icon {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .submission-form {
+      background-color: var(--bg-primary);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      display: none;
+      margin-top: 2rem;
+    }
+    
+    .submission-form.active {
+      display: block;
+    }
+    
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+    
+    .reference-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-orange);
+      background-color: var(--secondary-light);
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="/" class="navbar-brand">SorSU NSTP Hub</a>
+        <ul class="navbar-nav">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/concern" class="nav-link">Report Concern</a></li>
+          <li><a href="/track-status" class="nav-link">Track Status</a></li>
+          <li><a href="/login" class="nav-link">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>GWA Calculator</h1>
+      <p>Calculate and submit your GWA for Top 10 Evaluation</p>
+    </div>
+  </section>
+
+  <!-- GWA Section -->
+  <section class="gwa-section">
+    <div class="container">
+      <!-- Info Box -->
+      <div class="gwa-info">
+        <h4>ℹ️ About GWA Evaluation</h4>
+        <p><strong>Qualification Threshold: 2.00 or below</strong></p>
+        <p>✓ Only students with GWA of 2.00 or below qualify for Top 10 Evaluation</p>
+        <p>✓ Your GWA will be verified by the NSTP office</p>
+        <p>✓ A reference number will be provided for tracking</p>
+      </div>
+
+      <!-- Calculator -->
+      <div class="gwa-calculator" id="calculatorSection">
+        <h3 class="mb-3">Calculate Your GWA</h3>
+        <div class="form-group">
+          <label class="form-label">Enter Your GWA (1.00 - 5.00) *</label>
+          <input type="number" id="gwaInput" class="form-control" placeholder="e.g., 1.75" 
+                 min="1.00" max="5.00" step="0.01" required>
+          <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+            Enter your General Weighted Average (GWA) with up to 2 decimal places
+          </p>
+        </div>
+        <div class="text-center mt-4">
+          <button onclick="calculateGWA()" class="btn btn-primary">Calculate</button>
+        </div>
+
+        <!-- Result Display -->
+        <div id="resultDisplay" style="display: none;">
+          <div class="gwa-display">
+            <h3>Your GWA</h3>
+            <div class="gwa-value" id="gwaValue">0.00</div>
+            <div class="qualification-badge" id="qualificationBadge">Status</div>
+            <p id="qualificationMessage" style="margin-top: 1rem; font-size: 1.1rem;"></p>
+          </div>
+          <div class="text-center">
+            <button onclick="showSubmissionForm()" class="btn btn-primary" id="submitForEvalBtn">
+              Submit for Evaluation
+            </button>
+            <button onclick="resetCalculator()" class="btn btn-secondary">Calculate Again</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submission Form (Hidden Initially) -->
+      <div class="submission-form" id="submissionForm">
+        <h3 class="mb-3">Submit for Top 10 Evaluation</h3>
+        <form id="gwaSubmitForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Campus *</label>
+                <select id="campusId" class="form-select" required>
+                  <option value="">Select Campus</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Program *</label>
+                <select id="programId" class="form-select" required>
+                  <option value="">Select Program</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Student ID *</label>
+                <input type="text" id="studentId" class="form-control" placeholder="e.g., 2021-12345" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input type="email" id="email" class="form-control" placeholder="your.email@example.com" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">First Name *</label>
+                <input type="text" id="firstName" class="form-control" placeholder="First Name" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Last Name *</label>
+                <input type="text" id="lastName" class="form-control" placeholder="Last Name" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Academic Year *</label>
+                <input type="text" id="academicYear" class="form-control" placeholder="e.g., 2023-2024" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Semester *</label>
+                <select id="semester" class="form-select" required>
+                  <option value="">Select Semester</option>
+                  <option value="1st">1st Semester</option>
+                  <option value="2nd">2nd Semester</option>
+                  <option value="summer">Summer</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Upload Proof of GWA (Optional)</label>
+            <input type="file" id="proof" class="form-control" accept="image/*,.pdf">
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Upload your transcript or certificate of grades
+            </p>
+          </div>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary" id="finalSubmitBtn">
+              Submit Application
+            </button>
+            <button type="button" onclick="hideSubmissionForm()" class="btn btn-secondary">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success Message -->
+      <div class="success-message" id="successMessage">
+        <div class="success-icon" style="font-size: 5rem; color: var(--status-success);">✅</div>
+        <h2>GWA Submitted Successfully!</h2>
+        <p>Your GWA has been submitted for evaluation.</p>
+        <div class="reference-number" id="referenceNumber">REF-XXXXXXXXXX</div>
+        <p style="color: var(--text-light);">Please save this reference number for tracking.</p>
+        <div class="mt-3">
+          <a href="/track-status" class="btn btn-primary">Track Status</a>
+          <button onclick="location.reload()" class="btn btn-secondary">Submit Another</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Result Popup -->
+  <div class="result-popup" id="resultPopup">
+    <div class="popup-content">
+      <div class="popup-icon" id="popupIcon">🎓</div>
+      <h2 id="popupTitle">Qualification Status</h2>
+      <p id="popupMessage" style="font-size: 1.25rem; margin: 1.5rem 0;"></p>
+      <div class="gwa-value" id="popupGWA">0.00</div>
+      <button onclick="closePopup()" class="btn btn-primary mt-3">OK</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Sorsogon State University - NSTP Service Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    let currentGWA = null;
+    let isQualified = false;
+
+    // Load campuses on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCampuses('campusId');
+    });
+
+    // Load programs when campus is selected
+    document.getElementById('campusId').addEventListener('change', async (e) => {
+      const campusId = e.target.value;
+      if (campusId) {
+        await loadPrograms(campusId, 'programId');
+      } else {
+        document.getElementById('programId').innerHTML = '<option value="">Select Program</option>';
+      }
+    });
+
+    async function calculateGWA() {
+      const gwaInput = document.getElementById('gwaInput').value;
+      
+      if (!gwaInput || gwaInput < 1 || gwaInput > 5) {
+        showToast('Please enter a valid GWA between 1.00 and 5.00', 'error');
+        return;
+      }
+
+      try {
+        const data = await apiRequest('/gwa/calculate', {
+          method: 'POST',
+          body: JSON.stringify({ gwa: parseFloat(gwaInput) })
+        });
+
+        currentGWA = data.gwa;
+        isQualified = data.isQualified;
+
+        // Show result in calculator section
+        document.getElementById('gwaValue').textContent = currentGWA.toFixed(2);
+        const qualificationBadge = document.getElementById('qualificationBadge');
+        const qualificationMessage = document.getElementById('qualificationMessage');
+        
+        if (isQualified) {
+          qualificationBadge.textContent = 'QUALIFIED ✓';
+          qualificationBadge.className = 'qualification-badge qualified';
+          qualificationMessage.textContent = 'Congratulations! You are qualified for Top 10 Evaluation.';
+          qualificationMessage.style.color = 'var(--status-success)';
+          document.getElementById('submitForEvalBtn').style.display = 'inline-block';
+        } else {
+          qualificationBadge.textContent = 'DISQUALIFIED ✗';
+          qualificationBadge.className = 'qualification-badge disqualified';
+          qualificationMessage.textContent = 'Your GWA does not meet the qualification threshold of 2.00.';
+          qualificationMessage.style.color = 'var(--status-danger)';
+          document.getElementById('submitForEvalBtn').style.display = 'none';
+        }
+
+        document.getElementById('resultDisplay').style.display = 'block';
+
+        // Show popup
+        showResultPopup(data);
+      } catch (error) {
+        showToast(error.message || 'Failed to calculate GWA', 'error');
+      }
+    }
+
+    function showResultPopup(data) {
+      const popup = document.getElementById('resultPopup');
+      const popupIcon = document.getElementById('popupIcon');
+      const popupTitle = document.getElementById('popupTitle');
+      const popupMessage = document.getElementById('popupMessage');
+      const popupGWA = document.getElementById('popupGWA');
+
+      if (data.isQualified) {
+        popupIcon.textContent = '🎉';
+        popupTitle.textContent = 'QUALIFIED!';
+        popupMessage.textContent = 'Congratulations! You meet the qualification criteria for Top 10 Evaluation.';
+        popupMessage.style.color = 'var(--status-success)';
+        popupGWA.style.color = 'var(--status-success)';
+      } else {
+        popupIcon.textContent = '❌';
+        popupTitle.textContent = 'DISQUALIFIED';
+        popupMessage.textContent = 'Your GWA exceeds the threshold of 2.00. You do not qualify for Top 10 Evaluation.';
+        popupMessage.style.color = 'var(--status-danger)';
+        popupGWA.style.color = 'var(--status-danger)';
+      }
+
+      popupGWA.textContent = data.gwa.toFixed(2);
+      popup.classList.add('active');
+    }
+
+    function closePopup() {
+      document.getElementById('resultPopup').classList.remove('active');
+    }
+
+    function showSubmissionForm() {
+      if (!isQualified) {
+        showToast('Only qualified students can submit for evaluation', 'error');
+        return;
+      }
+      document.getElementById('submissionForm').classList.add('active');
+      document.getElementById('calculatorSection').style.display = 'none';
+    }
+
+    function hideSubmissionForm() {
+      document.getElementById('submissionForm').classList.remove('active');
+      document.getElementById('calculatorSection').style.display = 'block';
+    }
+
+    function resetCalculator() {
+      document.getElementById('gwaInput').value = '';
+      document.getElementById('resultDisplay').style.display = 'none';
+      currentGWA = null;
+      isQualified = false;
+    }
+
+    // Form submission
+    document.getElementById('gwaSubmitForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (!currentGWA) {
+        showToast('Please calculate your GWA first', 'error');
+        return;
+      }
+
+      if (!validateForm('gwaSubmitForm')) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('finalSubmitBtn');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        const formData = new FormData();
+        formData.append('campusId', document.getElementById('campusId').value);
+        formData.append('programId', document.getElementById('programId').value);
+        formData.append('studentId', document.getElementById('studentId').value);
+        formData.append('firstName', document.getElementById('firstName').value);
+        formData.append('lastName', document.getElementById('lastName').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('gwa', currentGWA);
+        formData.append('academicYear', document.getElementById('academicYear').value);
+        formData.append('semester', document.getElementById('semester').value);
+        
+        const proofFile = document.getElementById('proof').files[0];
+        if (proofFile) {
+          formData.append('proof', proofFile);
+        }
+
+        const response = await fetch(`${API_URL}/gwa/submit`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Submission failed');
+        }
+
+        // Show success message
+        document.getElementById('submissionForm').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
+        document.getElementById('referenceNumber').textContent = data.referenceNumber;
+        
+        showToast('GWA submitted successfully!', 'success');
+      } catch (error) {
+        console.error('Submission error:', error);
+        showToast(error.message || 'Failed to submit GWA', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  </script>
+</body>
+</html>
