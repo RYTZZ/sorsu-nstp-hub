@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SorSU NSTP Service Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <style>
+    .hero {
+      background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+      color: var(--secondary-white);
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      color: var(--secondary-white);
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero p {
+      color: var(--secondary-white);
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    
+    .campus-selector {
+      padding: 3rem 0;
+      background-color: var(--bg-primary);
+    }
+    
+    .campus-card {
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      border: 3px solid transparent;
+    }
+    
+    .campus-card:hover {
+      border-color: var(--primary-orange);
+      transform: scale(1.05);
+    }
+    
+    .campus-card.selected {
+      border-color: var(--primary-orange);
+      background: linear-gradient(135deg, var(--primary-orange-light), var(--accent-light));
+      color: var(--secondary-white);
+    }
+    
+    .campus-card.selected h3,
+    .campus-card.selected p {
+      color: var(--secondary-white);
+    }
+    
+    .features {
+      padding: 3rem 0;
+      background-color: var(--bg-secondary);
+    }
+    
+    .feature-card {
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      color: var(--primary-orange);
+      margin-bottom: 1rem;
+    }
+    
+    .cta-section {
+      background: linear-gradient(135deg, var(--accent-dark), var(--primary-orange));
+      color: var(--secondary-white);
+      padding: 3rem 0;
+      text-align: center;
+    }
+    
+    .cta-section h2,
+    .cta-section p {
+      color: var(--secondary-white);
+    }
+    
+    .quick-links {
+      padding: 3rem 0;
+    }
+    
+    .quick-link-card {
+      text-align: center;
+      cursor: pointer;
+      padding: 2rem;
+      background: var(--bg-primary);
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      transition: all var(--transition-normal);
+    }
+    
+    .quick-link-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      background: linear-gradient(135deg, var(--primary-orange-light), var(--accent-light));
+      color: var(--secondary-white);
+    }
+    
+    .quick-link-card:hover h3,
+    .quick-link-card:hover p {
+      color: var(--secondary-white);
+    }
+    
+    .footer {
+      background-color: var(--text-dark);
+      color: var(--secondary-white);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .footer p {
+      color: var(--secondary-white);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>SorSU NSTP Service Hub</h1>
+      <p>Your gateway to National Service Training Program services across all SorSU campuses</p>
+      <div class="d-flex justify-center gap-2">
+        <a href="#services" class="btn btn-primary">Get Started</a>
+        <a href="/about" class="btn btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Campus Selector -->
+  <section class="campus-selector" id="campus-selection">
+    <div class="container">
+      <h2 class="text-center mb-4">Select Your Campus</h2>
+      <div class="row" id="campusList">
+        <div class="col-md-3">
+          <div class="card campus-card" data-campus="sorsogon">
+            <h3>Sorsogon City</h3>
+            <p>Main Campus</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card campus-card" data-campus="bulan">
+            <h3>Bulan</h3>
+            <p>Bulan Campus</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card campus-card" data-campus="castilla">
+            <h3>Castilla</h3>
+            <p>Castilla Campus</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card campus-card" data-campus="magallanes">
+            <h3>Magallanes</h3>
+            <p>Magallanes Campus</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Links / Services -->
+  <section class="quick-links" id="services">
+    <div class="container">
+      <h2 class="text-center mb-4">Our Services</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="quick-link-card" onclick="window.location.href='/concern'">
+            <div class="feature-icon">📝</div>
+            <h3>Report Concern</h3>
+            <p>Submit your concerns and track their status</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-link-card" onclick="window.location.href='/gwa-calculator'">
+            <div class="feature-icon">🎓</div>
+            <h3>GWA Calculator</h3>
+            <p>Calculate and submit your GWA for Top 10 evaluation</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-link-card" onclick="window.location.href='/track-status'">
+            <div class="feature-icon">🔍</div>
+            <h3>Track Status</h3>
+            <p>Check the status of your submissions</p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="quick-link-card" onclick="window.location.href='/nstp-components'">
+            <div class="feature-icon">📚</div>
+            <h3>NSTP Components</h3>
+            <p>Learn about NSTP programs and thrusts</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-link-card" onclick="window.location.href='/news'">
+            <div class="feature-icon">📰</div>
+            <h3>News & Updates</h3>
+            <p>Stay informed with latest announcements</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="quick-link-card" onclick="window.location.href='/login'">
+            <div class="feature-icon">🔐</div>
+            <h3>Admin Portal</h3>
+            <p>Login to manage NSTP operations</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="container">
+      <h2 class="text-center mb-4">Why Choose SorSU NSTP Hub?</h2>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="feature-card">
+            <div class="feature-icon">🏫</div>
+            <h4>Multi-Campus</h4>
+            <p>Unified platform for all four SorSU campuses</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h4>Secure</h4>
+            <p>Data privacy compliant and secure</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h4>Fast</h4>
+            <p>Quick submission and tracking</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h4>Responsive</h4>
+            <p>Works on all devices</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Ready to Get Started?</h2>
+      <p>Join thousands of students using SorSU NSTP Service Hub</p>
+      <a href="/concern" class="btn btn-secondary">Submit a Concern</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Sorsogon State University - NSTP Service Hub. All rights reserved.</p>
+      <p>Contact: nstp@sorsu.edu.ph</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    // Campus selection
+    document.querySelectorAll('.campus-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.campus-card').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        const campus = this.dataset.campus;
+        localStorage.setItem('selectedCampus', campus);
+        showToast(`${this.querySelector('h3').textContent} campus selected`, 'success');
+      });
+    });
+
+    // Check if campus is already selected
+    const selectedCampus = localStorage.getItem('selectedCampus');
+    if (selectedCampus) {
+      const card = document.querySelector(`[data-campus="${selectedCampus}"]`);
+      if (card) {
+        card.classList.add('selected');
+      }
+    }
+  </script>
+</body>
+</html>

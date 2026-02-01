@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Concern - SorSU NSTP Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+      color: var(--secondary-white);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .page-header h1 {
+      color: var(--secondary-white);
+    }
+    
+    .concern-form-section {
+      padding: 3rem 0;
+      min-height: 70vh;
+    }
+    
+    .privacy-notice {
+      background-color: #fff3cd;
+      border-left: 4px solid var(--status-warning);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+    }
+    
+    .privacy-notice h4 {
+      color: var(--status-warning);
+      margin-bottom: 0.5rem;
+    }
+    
+    .privacy-notice p {
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-section {
+      background-color: var(--bg-primary);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .file-upload-area {
+      border: 2px dashed var(--secondary-light);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+    
+    .file-upload-area:hover {
+      border-color: var(--primary-orange);
+      background-color: var(--secondary-light);
+    }
+    
+    .file-upload-area.dragover {
+      border-color: var(--primary-orange);
+      background-color: var(--accent-light);
+    }
+    
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+    
+    .success-icon {
+      font-size: 5rem;
+      color: var(--status-success);
+      margin-bottom: 1rem;
+    }
+    
+    .reference-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-orange);
+      background-color: var(--secondary-light);
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="/" class="navbar-brand">SorSU NSTP Hub</a>
+        <ul class="navbar-nav">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/gwa-calculator" class="nav-link">GWA Calculator</a></li>
+          <li><a href="/track-status" class="nav-link">Track Status</a></li>
+          <li><a href="/login" class="nav-link">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Report a Concern</h1>
+      <p>Submit your concerns or inquiries. We're here to help!</p>
+    </div>
+  </section>
+
+  <!-- Concern Form Section -->
+  <section class="concern-form-section">
+    <div class="container">
+      <!-- Data Privacy Notice -->
+      <div class="privacy-notice">
+        <h4>📋 Data Privacy Notice</h4>
+        <p><strong>We respect your privacy.</strong> The information you provide will be used solely for addressing your concern.</p>
+        <p>✓ Your data is secured and protected</p>
+        <p>✓ Only authorized personnel can access your submission</p>
+        <p>✓ You will receive email notifications about your concern status</p>
+        <p>✓ Reference number will be provided for tracking</p>
+      </div>
+
+      <!-- Form -->
+      <div class="form-section" id="concernFormSection">
+        <h3 class="mb-3">Fill in the Details</h3>
+        <form id="concernForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Campus *</label>
+                <select id="campusId" class="form-select" required>
+                  <option value="">Select Campus</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Program (Optional)</label>
+                <select id="programId" class="form-select">
+                  <option value="">Select Program</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Full Name *</label>
+                <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input type="email" id="email" class="form-control" placeholder="your.email@example.com" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Concern Type *</label>
+            <select id="concernType" class="form-select" required>
+              <option value="">Select Concern Type</option>
+              <option value="General Inquiry">General Inquiry</option>
+              <option value="NSTP Registration">NSTP Registration</option>
+              <option value="NSTP Requirements">NSTP Requirements</option>
+              <option value="GWA Submission">GWA Submission</option>
+              <option value="Technical Issue">Technical Issue</option>
+              <option value="Account Issue">Account Issue</option>
+              <option value="Complaint">Complaint</option>
+              <option value="Feedback">Feedback</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject *</label>
+            <input type="text" id="subject" class="form-control" placeholder="Brief description of your concern" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Message *</label>
+            <textarea id="message" class="form-control" rows="6" placeholder="Describe your concern in detail..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Attachment (Optional)</label>
+            <div class="file-upload-area" id="fileUploadArea">
+              <p>📎 Click or drag file here to upload</p>
+              <p style="font-size: 0.875rem; color: var(--text-muted);">Supported: Images, PDF, Word documents (Max 10MB)</p>
+              <input type="file" id="attachment" accept="image/*,.pdf,.doc,.docx" style="display: none;">
+            </div>
+            <div id="fileName" style="margin-top: 10px; color: var(--status-success);"></div>
+          </div>
+
+          <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 10px;">
+              <input type="checkbox" id="privacyConsent" required>
+              <span>I agree to the data privacy policy and consent to the collection and processing of my information *</span>
+            </label>
+          </div>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Submit Concern
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success Message (Hidden Initially) -->
+      <div class="success-message" id="successMessage">
+        <div class="success-icon">✅</div>
+        <h2>Concern Submitted Successfully!</h2>
+        <p>Your concern has been received and is being processed.</p>
+        <div class="reference-number" id="referenceNumber">REF-XXXXXXXXXX</div>
+        <p style="color: var(--text-light);">Please save this reference number for tracking your concern.</p>
+        <p style="color: var(--text-light);">A confirmation email has been sent to your email address.</p>
+        <div class="mt-3">
+          <a href="/track-status" class="btn btn-primary">Track Status</a>
+          <button onclick="resetForm()" class="btn btn-secondary">Submit Another</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Sorsogon State University - NSTP Service Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    // Load campuses on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCampuses('campusId');
+      
+      // Check submission status
+      const submissionsEnabled = await checkSubmissionStatus();
+      if (!submissionsEnabled) {
+        showToast('Submissions are currently disabled', 'warning');
+        document.getElementById('submitBtn').disabled = true;
+      }
+    });
+
+    // Load programs when campus is selected
+    document.getElementById('campusId').addEventListener('change', async (e) => {
+      const campusId = e.target.value;
+      if (campusId) {
+        await loadPrograms(campusId, 'programId');
+      } else {
+        document.getElementById('programId').innerHTML = '<option value="">Select Program</option>';
+      }
+    });
+
+    // File upload handling
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const fileInput = document.getElementById('attachment');
+    const fileNameDisplay = document.getElementById('fileName');
+
+    fileUploadArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileUploadArea.classList.add('dragover');
+    });
+
+    fileUploadArea.addEventListener('dragleave', () => {
+      fileUploadArea.classList.remove('dragover');
+    });
+
+    fileUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileUploadArea.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        fileInput.files = e.dataTransfer.files;
+        fileNameDisplay.textContent = `Selected: ${file.name}`;
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        fileNameDisplay.textContent = `Selected: ${file.name}`;
+      }
+    });
+
+    // Form submission
+    document.getElementById('concernForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (!validateForm('concernForm')) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        const formData = new FormData();
+        formData.append('campusId', document.getElementById('campusId').value);
+        formData.append('programId', document.getElementById('programId').value || '');
+        formData.append('name', document.getElementById('name').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('concernType', document.getElementById('concernType').value);
+        formData.append('subject', document.getElementById('subject').value);
+        formData.append('message', document.getElementById('message').value);
+        
+        if (fileInput.files[0]) {
+          formData.append('attachment', fileInput.files[0]);
+        }
+
+        const response = await fetch(`${API_URL}/concerns`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Submission failed');
+        }
+
+        // Show success message
+        document.getElementById('concernFormSection').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
+        document.getElementById('referenceNumber').textContent = data.referenceNumber;
+        
+        showToast('Concern submitted successfully!', 'success');
+      } catch (error) {
+        console.error('Submission error:', error);
+        showToast(error.message || 'Failed to submit concern', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    // Reset form function
+    function resetForm() {
+      document.getElementById('concernForm').reset();
+      document.getElementById('fileName').textContent = '';
+      document.getElementById('concernFormSection').style.display = 'block';
+      document.getElementById('successMessage').style.display = 'none';
+      document.getElementById('submitBtn').disabled = false;
+    }
+  </script>
+</body>
+</html>

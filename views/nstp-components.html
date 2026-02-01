@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NSTP Components - SorSU NSTP Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+      color: var(--secondary-white);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .page-header h1 {
+      color: var(--secondary-white);
+    }
+    
+    .components-section {
+      padding: 3rem 0;
+    }
+    
+    .component-card {
+      background-color: var(--bg-primary);
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-left: 5px solid var(--primary-orange);
+    }
+    
+    .component-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .dropdown-section {
+      margin: 1rem 0;
+    }
+    
+    .dropdown-header {
+      background-color: var(--secondary-light);
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all var(--transition-normal);
+    }
+    
+    .dropdown-header:hover {
+      background-color: var(--primary-orange-light);
+      color: var(--secondary-white);
+    }
+    
+    .dropdown-content {
+      display: none;
+      padding: 1.5rem;
+      background-color: var(--bg-primary);
+      border: 1px solid var(--secondary-light);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+    
+    .dropdown-content.active {
+      display: block;
+    }
+    
+    .dropdown-arrow {
+      transition: transform var(--transition-normal);
+    }
+    
+    .dropdown-arrow.rotated {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="/" class="navbar-brand">SorSU NSTP Hub</a>
+        <ul class="navbar-nav">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/concern" class="nav-link">Report Concern</a></li>
+          <li><a href="/gwa-calculator" class="nav-link">GWA Calculator</a></li>
+          <li><a href="/login" class="nav-link">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>NSTP Components & Thrusts</h1>
+      <p>Learn about the National Service Training Program</p>
+    </div>
+  </section>
+
+  <!-- Components Section -->
+  <section class="components-section">
+    <div class="container">
+      <!-- What is NSTP -->
+      <div class="component-card">
+        <div class="component-icon">📚</div>
+        <h2>What is NSTP?</h2>
+        <p>
+          The National Service Training Program (NSTP) is a civic education and defense preparedness program 
+          implemented in higher education institutions in the Philippines. It is designed to enhance civic 
+          consciousness and defense preparedness in the youth through training in military science, 
+          literacy, civic welfare, and other programs.
+        </p>
+      </div>
+
+      <!-- NSTP Components -->
+      <h2 class="text-center mb-4">Three Components of NSTP</h2>
+
+      <!-- ROTC -->
+      <div class="dropdown-section">
+        <div class="dropdown-header" onclick="toggleDropdown('rotc')">
+          <h3>🎖️ Reserve Officers' Training Corps (ROTC)</h3>
+          <span class="dropdown-arrow" id="rotc-arrow">▼</span>
+        </div>
+        <div class="dropdown-content" id="rotc-content">
+          <h4>Purpose</h4>
+          <p>
+            ROTC is designed to provide military training to tertiary-level students to motivate, train, 
+            organize, and mobilize them for national defense preparedness.
+          </p>
+          <h4>Key Activities</h4>
+          <ul>
+            <li>Basic Military Training</li>
+            <li>Physical Fitness and Drills</li>
+            <li>Leadership Development</li>
+            <li>National Security Awareness</li>
+            <li>Disaster Preparedness Training</li>
+          </ul>
+          <h4>Duration</h4>
+          <p>Two (2) semesters of training</p>
+        </div>
+      </div>
+
+      <!-- CWTS -->
+      <div class="dropdown-section">
+        <div class="dropdown-header" onclick="toggleDropdown('cwts')">
+          <h3>🤝 Civic Welfare Training Service (CWTS)</h3>
+          <span class="dropdown-arrow" id="cwts-arrow">▼</span>
+        </div>
+        <div class="dropdown-content" id="cwts-content">
+          <h4>Purpose</h4>
+          <p>
+            CWTS is designed to contribute to the general welfare and betterment of life for the members 
+            of the community, especially those who are underprivileged, homeless, or indigenous.
+          </p>
+          <h4>Key Activities</h4>
+          <ul>
+            <li>Community Immersion Programs</li>
+            <li>Health and Sanitation Projects</li>
+            <li>Environmental Conservation</li>
+            <li>Livelihood Programs</li>
+            <li>Educational Assistance</li>
+            <li>Values Formation</li>
+          </ul>
+          <h4>Duration</h4>
+          <p>Two (2) semesters of training</p>
+        </div>
+      </div>
+
+      <!-- LTS -->
+      <div class="dropdown-section">
+        <div class="dropdown-header" onclick="toggleDropdown('lts')">
+          <h3>📖 Literacy Training Service (LTS)</h3>
+          <span class="dropdown-arrow" id="lts-arrow">▼</span>
+        </div>
+        <div class="dropdown-content" id="lts-content">
+          <h4>Purpose</h4>
+          <p>
+            LTS is designed to train students to teach literacy and numeracy skills to school children, 
+            out-of-school youth, and other segments of society in need of their service.
+          </p>
+          <h4>Key Activities</h4>
+          <ul>
+            <li>Teaching Basic Literacy</li>
+            <li>Numeracy Skills Training</li>
+            <li>Alternative Learning System (ALS)</li>
+            <li>Tutorial Programs</li>
+            <li>Reading Comprehension Enhancement</li>
+            <li>Life Skills Education</li>
+          </ul>
+          <h4>Duration</h4>
+          <p>Two (2) semesters of training</p>
+        </div>
+      </div>
+
+      <!-- NSTP Thrusts -->
+      <div class="component-card mt-4">
+        <h2 class="mb-3">🎯 NSTP Thrusts</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <h4>1. Civic Consciousness</h4>
+            <p>Developing awareness of social issues and civic responsibility</p>
+          </div>
+          <div class="col-md-6">
+            <h4>2. Defense Preparedness</h4>
+            <p>Training for national security and emergency response</p>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <h4>3. Community Service</h4>
+            <p>Active participation in community development programs</p>
+          </div>
+          <div class="col-md-6">
+            <h4>4. Values Formation</h4>
+            <p>Fostering patriotism, discipline, and ethical values</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requirements -->
+      <div class="component-card">
+        <h2 class="mb-3">📋 NSTP Requirements at SorSU</h2>
+        <ul>
+          <li>Enrollment in any NSTP component for two consecutive semesters</li>
+          <li>Regular attendance (minimum of 80% per semester)</li>
+          <li>Active participation in all activities and projects</li>
+          <li>Completion of required community service hours</li>
+          <li>Submission of all required reports and documentation</li>
+          <li>Passing grade in both NSTP 1 and NSTP 2</li>
+        </ul>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="component-card">
+        <h2 class="mb-3">📞 Contact NSTP Office</h2>
+        <p>For more information about NSTP programs at Sorsogon State University:</p>
+        <p><strong>Email:</strong> nstp@sorsu.edu.ph</p>
+        <p><strong>Office Hours:</strong> Monday - Friday, 8:00 AM - 5:00 PM</p>
+        <div class="mt-3">
+          <a href="/concern" class="btn btn-primary">Submit an Inquiry</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Sorsogon State University - NSTP Service Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleDropdown(id) {
+      const content = document.getElementById(`${id}-content`);
+      const arrow = document.getElementById(`${id}-arrow`);
+      
+      content.classList.toggle('active');
+      arrow.classList.toggle('rotated');
+    }
+  </script>
+</body>
+</html>

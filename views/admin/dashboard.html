@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - SorSU NSTP Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(180deg, var(--primary-orange), var(--accent-dark));
+      color: var(--secondary-white);
+      padding: 2rem 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .sidebar-header {
+      padding: 0 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .sidebar-header h2 {
+      color: var(--secondary-white);
+      font-size: 1.25rem;
+      margin: 0;
+    }
+    
+    .sidebar-nav {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+    
+    .sidebar-nav li {
+      margin: 0;
+    }
+    
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 1rem 1.5rem;
+      color: var(--secondary-white);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding-left: 2rem;
+    }
+    
+    .main-content {
+      flex: 1;
+      margin-left: 250px;
+      padding: 2rem;
+      background-color: var(--bg-secondary);
+    }
+    
+    .top-bar {
+      background-color: var(--bg-primary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+      color: var(--secondary-white);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+    
+    .stat-card h3 {
+      color: var(--secondary-white);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-value {
+      font-size: 3rem;
+      font-weight: 700;
+      margin: 1rem 0;
+    }
+    
+    .recent-items {
+      background-color: var(--bg-primary);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      margin-top: 2rem;
+    }
+    
+    .item-row {
+      padding: 1rem;
+      border-bottom: 1px solid var(--secondary-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .item-row:last-child {
+      border-bottom: none;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-250px);
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>NSTP Admin</h2>
+      <p style="font-size: 0.875rem; margin-top: 0.5rem;" id="userRole">Loading...</p>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li><a href="/admin/dashboard" class="active">📊 Dashboard</a></li>
+      <li><a href="/admin/concerns">📝 Concerns</a></li>
+      <li><a href="/admin/gwa">🎓 GWA Submissions</a></li>
+      <li><a href="/admin/news">📰 News</a></li>
+      <li><a href="/admin/campuses">🏫 Campuses</a></li>
+      <li><a href="/admin/programs">📚 Programs</a></li>
+      <li><a href="/admin/users">👥 Users</a></li>
+      <li><a href="/admin/settings">⚙️ Settings</a></li>
+      <li><a href="#" onclick="logout()" style="border-top: 1px solid rgba(255, 255, 255, 0.2); margin-top: 1rem;">🚪 Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="top-bar">
+      <div>
+        <h1 style="margin: 0;">Dashboard</h1>
+        <p style="color: var(--text-light); margin: 0;">Welcome back!</p>
+      </div>
+      <div>
+        <span id="userName">Admin User</span>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row">
+      <div class="col-md-3">
+        <div class="stat-card">
+          <h3>Total Concerns</h3>
+          <div class="stat-value" id="totalConcerns">0</div>
+          <p>All submissions</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #17a2b8, #138496);">
+          <h3>Pending</h3>
+          <div class="stat-value" id="pendingConcerns">0</div>
+          <p>Awaiting review</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #28a745, #20c997);">
+          <h3>GWA Qualified</h3>
+          <div class="stat-value" id="qualifiedGWA">0</div>
+          <p>Eligible students</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #ffc107, #e0a800);">
+          <h3>Total Users</h3>
+          <div class="stat-value" id="totalUsers">0</div>
+          <p>Registered</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Concerns -->
+    <div class="recent-items">
+      <h3 class="mb-3">Recent Concerns</h3>
+      <div id="recentConcerns">
+        <p style="text-align: center; color: var(--text-muted);">Loading...</p>
+      </div>
+    </div>
+
+    <!-- Recent GWA Submissions -->
+    <div class="recent-items">
+      <h3 class="mb-3">Recent GWA Submissions</h3>
+      <div id="recentGWA">
+        <p style="text-align: center; color: var(--text-muted);">Loading...</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    // Check authentication
+    if (!AuthService.isAuthenticated()) {
+      window.location.href = '/login';
+    }
+
+    // Load user info
+    const user = AuthService.getUser();
+    if (user) {
+      document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+      document.getElementById('userRole').textContent = user.role.replace('_', ' ').toUpperCase();
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        AuthService.logout();
+      }
+    }
+
+    // Load dashboard data
+    async function loadDashboardData() {
+      try {
+        // Load concerns
+        const concernsData = await apiRequest('/concerns?page=1&limit=5');
+        document.getElementById('totalConcerns').textContent = concernsData.pagination?.total || 0;
+        
+        const pendingConcerns = concernsData.concerns?.filter(c => c.status === 'pending').length || 0;
+        document.getElementById('pendingConcerns').textContent = pendingConcerns;
+
+        // Display recent concerns
+        const recentConcernsDiv = document.getElementById('recentConcerns');
+        if (concernsData.concerns && concernsData.concerns.length > 0) {
+          recentConcernsDiv.innerHTML = concernsData.concerns.map(concern => `
+            <div class="item-row">
+              <div>
+                <strong>${concern.subject}</strong>
+                <p style="margin: 0; font-size: 0.875rem; color: var(--text-light);">
+                  ${concern.name} - ${concern.concernType}
+                </p>
+              </div>
+              <span class="badge badge-${concern.status === 'pending' ? 'warning' : 'info'}">
+                ${concern.status}
+              </span>
+            </div>
+          `).join('');
+        } else {
+          recentConcernsDiv.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No concerns yet</p>';
+        }
+
+        // Load GWA submissions
+        const gwaData = await apiRequest('/gwa?page=1&limit=5');
+        const qualifiedCount = gwaData.submissions?.filter(s => s.isQualified).length || 0;
+        document.getElementById('qualifiedGWA').textContent = qualifiedCount;
+
+        // Display recent GWA submissions
+        const recentGWADiv = document.getElementById('recentGWA');
+        if (gwaData.submissions && gwaData.submissions.length > 0) {
+          recentGWADiv.innerHTML = gwaData.submissions.map(gwa => `
+            <div class="item-row">
+              <div>
+                <strong>${gwa.firstName} ${gwa.lastName}</strong>
+                <p style="margin: 0; font-size: 0.875rem; color: var(--text-light);">
+                  GWA: ${gwa.gwa} - ${gwa.program?.name || 'N/A'}
+                </p>
+              </div>
+              <span class="badge badge-${gwa.isQualified ? 'success' : 'danger'}">
+                ${gwa.isQualified ? 'Qualified' : 'Disqualified'}
+              </span>
+            </div>
+          `).join('');
+        } else {
+          recentGWADiv.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No GWA submissions yet</p>';
+        }
+
+        // Placeholder for total users (would need a separate endpoint)
+        document.getElementById('totalUsers').textContent = '0';
+
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+        showToast('Failed to load dashboard data', 'error');
+      }
+    }
+
+    // Load data on page load
+    loadDashboardData();
+  </script>
+</body>
+</html>

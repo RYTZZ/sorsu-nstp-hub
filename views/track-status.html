@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Status - SorSU NSTP Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+      color: var(--secondary-white);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .page-header h1 {
+      color: var(--secondary-white);
+    }
+    
+    .track-section {
+      padding: 3rem 0;
+      min-height: 70vh;
+    }
+    
+    .track-form {
+      background-color: var(--bg-primary);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+    
+    .result-card {
+      background-color: var(--bg-primary);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      display: none;
+    }
+    
+    .result-card.active {
+      display: block;
+    }
+    
+    .status-timeline {
+      margin: 2rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    
+    .timeline-item {
+      position: relative;
+      padding-left: 3rem;
+      padding-bottom: 2rem;
+    }
+    
+    .timeline-item:before {
+      content: '';
+      position: absolute;
+      left: 0.75rem;
+      top: 2rem;
+      width: 2px;
+      height: 100%;
+      background-color: var(--secondary-light);
+    }
+    
+    .timeline-item:last-child:before {
+      display: none;
+    }
+    
+    .timeline-dot {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background-color: var(--secondary-light);
+      border: 3px solid var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    
+    .timeline-dot.active {
+      background-color: var(--primary-orange);
+      color: var(--secondary-white);
+    }
+    
+    .timeline-dot.completed {
+      background-color: var(--status-success);
+      color: var(--secondary-white);
+    }
+    
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--secondary-light);
+    }
+    
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    
+    .info-value {
+      color: var(--text-light);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="/" class="navbar-brand">SorSU NSTP Hub</a>
+        <ul class="navbar-nav">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/concern" class="nav-link">Report Concern</a></li>
+          <li><a href="/gwa-calculator" class="nav-link">GWA Calculator</a></li>
+          <li><a href="/login" class="nav-link">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Track Status</h1>
+      <p>Track your submissions using your reference number</p>
+    </div>
+  </section>
+
+  <!-- Track Section -->
+  <section class="track-section">
+    <div class="container">
+      <!-- Tracking Form -->
+      <div class="track-form">
+        <h3 class="mb-3 text-center">Enter Reference Number</h3>
+        <form id="trackForm">
+          <div class="form-group">
+            <label class="form-label">Reference Number *</label>
+            <input type="text" id="referenceNumber" class="form-control" 
+                   placeholder="Enter your 10-digit reference number" 
+                   pattern="[0-9]{10}" 
+                   maxlength="10" 
+                   required>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Enter the 10-digit reference number you received after submission
+            </p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Submission Type *</label>
+            <select id="submissionType" class="form-select" required>
+              <option value="">Select Type</option>
+              <option value="concern">Concern/Report</option>
+              <option value="gwa">GWA Submission</option>
+            </select>
+          </div>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Track Status</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results for Concern -->
+      <div class="result-card" id="concernResult">
+        <h3 class="mb-3">Concern Details</h3>
+        
+        <div class="card mb-3" style="background-color: var(--secondary-light);">
+          <div class="info-row">
+            <span class="info-label">Reference Number:</span>
+            <span class="info-value" id="concern-ref"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Subject:</span>
+            <span class="info-value" id="concern-subject"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Type:</span>
+            <span class="info-value" id="concern-type"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Campus:</span>
+            <span class="info-value" id="concern-campus"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Status:</span>
+            <span class="badge" id="concern-status-badge"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Submitted:</span>
+            <span class="info-value" id="concern-date"></span>
+          </div>
+        </div>
+
+        <h4 class="mt-4 mb-3">Status Timeline</h4>
+        <ul class="status-timeline" id="concern-timeline">
+          <!-- Timeline will be populated dynamically -->
+        </ul>
+
+        <div class="text-center mt-4">
+          <button onclick="resetTracking()" class="btn btn-secondary">Track Another</button>
+        </div>
+      </div>
+
+      <!-- Results for GWA -->
+      <div class="result-card" id="gwaResult">
+        <h3 class="mb-3">GWA Submission Details</h3>
+        
+        <div class="card mb-3" style="background-color: var(--secondary-light);">
+          <div class="info-row">
+            <span class="info-label">Reference Number:</span>
+            <span class="info-value" id="gwa-ref"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Student Name:</span>
+            <span class="info-value" id="gwa-name"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Student ID:</span>
+            <span class="info-value" id="gwa-student-id"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Campus:</span>
+            <span class="info-value" id="gwa-campus"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Program:</span>
+            <span class="info-value" id="gwa-program"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">GWA:</span>
+            <span class="info-value" id="gwa-value" style="font-size: 1.5rem; font-weight: 700;"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Qualification:</span>
+            <span class="badge" id="gwa-qualification"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Status:</span>
+            <span class="badge" id="gwa-status-badge"></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Submitted:</span>
+            <span class="info-value" id="gwa-date"></span>
+          </div>
+        </div>
+
+        <div id="gwa-admin-notes" style="display: none;">
+          <h4 class="mt-4 mb-3">Admin Notes</h4>
+          <div class="card" style="background-color: #fff3cd;">
+            <p id="gwa-notes-content"></p>
+          </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <button onclick="resetTracking()" class="btn btn-secondary">Track Another</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Sorsogon State University - NSTP Service Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById('trackForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const referenceNumber = document.getElementById('referenceNumber').value;
+      const submissionType = document.getElementById('submissionType').value;
+
+      if (!referenceNumber || referenceNumber.length !== 10) {
+        showToast('Please enter a valid 10-digit reference number', 'error');
+        return;
+      }
+
+      if (!submissionType) {
+        showToast('Please select submission type', 'error');
+        return;
+      }
+
+      try {
+        if (submissionType === 'concern') {
+          await trackConcern(referenceNumber);
+        } else if (submissionType === 'gwa') {
+          await trackGWA(referenceNumber);
+        }
+      } catch (error) {
+        showToast(error.message || 'Failed to track submission', 'error');
+      }
+    });
+
+    async function trackConcern(referenceNumber) {
+      try {
+        const data = await apiRequest(`/concerns/reference/${referenceNumber}`);
+        const concern = data.concern;
+
+        // Populate concern details
+        document.getElementById('concern-ref').textContent = concern.referenceNumber;
+        document.getElementById('concern-subject').textContent = concern.subject;
+        document.getElementById('concern-type').textContent = concern.concernType;
+        document.getElementById('concern-campus').textContent = concern.campus?.name || 'N/A';
+        document.getElementById('concern-date').textContent = formatDate(concern.createdAt);
+
+        // Set status badge
+        const statusBadge = document.getElementById('concern-status-badge');
+        statusBadge.textContent = concern.status.toUpperCase();
+        statusBadge.className = 'badge';
+        
+        switch(concern.status) {
+          case 'pending':
+            statusBadge.classList.add('badge-warning');
+            break;
+          case 'in_progress':
+            statusBadge.classList.add('badge-info');
+            break;
+          case 'resolved':
+            statusBadge.classList.add('badge-success');
+            break;
+          case 'closed':
+            statusBadge.classList.add('badge-success');
+            break;
+          default:
+            statusBadge.classList.add('badge-info');
+        }
+
+        // Create timeline
+        const timeline = document.getElementById('concern-timeline');
+        timeline.innerHTML = '';
+        
+        const statuses = [
+          { key: 'pending', label: 'Submitted', icon: '📝' },
+          { key: 'in_progress', label: 'In Progress', icon: '🔄' },
+          { key: 'resolved', label: 'Resolved', icon: '✅' },
+          { key: 'closed', label: 'Closed', icon: '🔒' }
+        ];
+
+        const currentStatusIndex = statuses.findIndex(s => s.key === concern.status);
+
+        statuses.forEach((status, index) => {
+          const li = document.createElement('li');
+          li.className = 'timeline-item';
+          
+          let dotClass = '';
+          if (index < currentStatusIndex) {
+            dotClass = 'completed';
+          } else if (index === currentStatusIndex) {
+            dotClass = 'active';
+          }
+          
+          li.innerHTML = `
+            <div class="timeline-dot ${dotClass}">${status.icon}</div>
+            <div>
+              <h5>${status.label}</h5>
+              <p style="color: var(--text-muted); font-size: 0.875rem;">${index <= currentStatusIndex ? 'Completed' : 'Pending'}</p>
+            </div>
+          `;
+          timeline.appendChild(li);
+        });
+
+        // Show result
+        document.querySelector('.track-form').style.display = 'none';
+        document.getElementById('concernResult').classList.add('active');
+        showToast('Concern found!', 'success');
+      } catch (error) {
+        throw new Error('Concern not found. Please check your reference number.');
+      }
+    }
+
+    async function trackGWA(referenceNumber) {
+      try {
+        const data = await apiRequest(`/gwa/reference/${referenceNumber}`);
+        const submission = data.submission;
+
+        // Populate GWA details
+        document.getElementById('gwa-ref').textContent = submission.referenceNumber;
+        document.getElementById('gwa-name').textContent = `${submission.firstName} ${submission.lastName}`;
+        document.getElementById('gwa-student-id').textContent = submission.studentId;
+        document.getElementById('gwa-campus').textContent = submission.campus?.name || 'N/A';
+        document.getElementById('gwa-program').textContent = submission.program?.name || 'N/A';
+        document.getElementById('gwa-value').textContent = submission.gwa;
+        document.getElementById('gwa-date').textContent = formatDate(submission.createdAt);
+
+        // Set qualification badge
+        const qualBadge = document.getElementById('gwa-qualification');
+        if (submission.isQualified) {
+          qualBadge.textContent = 'QUALIFIED';
+          qualBadge.className = 'badge badge-success';
+        } else {
+          qualBadge.textContent = 'DISQUALIFIED';
+          qualBadge.className = 'badge badge-danger';
+        }
+
+        // Set status badge
+        const statusBadge = document.getElementById('gwa-status-badge');
+        statusBadge.textContent = submission.status.toUpperCase();
+        statusBadge.className = 'badge';
+        
+        switch(submission.status) {
+          case 'pending':
+            statusBadge.classList.add('badge-warning');
+            break;
+          case 'verified':
+            statusBadge.classList.add('badge-success');
+            break;
+          case 'rejected':
+            statusBadge.classList.add('badge-danger');
+            break;
+          default:
+            statusBadge.classList.add('badge-info');
+        }
+
+        // Show admin notes if available
+        if (submission.adminNotes) {
+          document.getElementById('gwa-admin-notes').style.display = 'block';
+          document.getElementById('gwa-notes-content').textContent = submission.adminNotes;
+        }
+
+        // Show result
+        document.querySelector('.track-form').style.display = 'none';
+        document.getElementById('gwaResult').classList.add('active');
+        showToast('GWA submission found!', 'success');
+      } catch (error) {
+        throw new Error('GWA submission not found. Please check your reference number.');
+      }
+    }
+
+    function resetTracking() {
+      document.querySelector('.track-form').style.display = 'block';
+      document.getElementById('concernResult').classList.remove('active');
+      document.getElementById('gwaResult').classList.remove('active');
+      document.getElementById('trackForm').reset();
+    }
+  </script>
+</body>
+</html>

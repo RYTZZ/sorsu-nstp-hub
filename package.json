@@ -1,0 +1,31 @@
+{
+  "name": "sorsu-nstp-hub",
+  "version": "1.0.0",
+  "description": "This repository contains the complete source code for the SorSU NSTP Service Hub System, a full-stack web application designed to manage the National Service Training Program (NSTP) operations across all four campuses of Sorsogon State University.",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "seed": "node backend/seed.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["nstp", "university", "education", "sorsogon"],
+  "author": "SorSU NSTP Team",
+  "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.9.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.0.2",
+    "mysql2": "^3.16.2",
+    "nodemailer": "^7.0.13",
+    "sequelize": "^6.37.7"
+  }
+}
