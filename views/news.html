@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News & Updates - SorSU NSTP Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+      color: var(--secondary-white);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    .page-header h1 {
+      color: var(--secondary-white);
+    }
+    
+    .news-section {
+      padding: 3rem 0;
+    }
+    
+    .news-card {
+      background-color: var(--bg-primary);
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      margin-bottom: 2rem;
+      transition: transform var(--transition-normal);
+    }
+    
+    .news-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .news-image {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      background: linear-gradient(135deg, var(--secondary-light), var(--bg-primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+    
+    .news-content {
+      padding: 2rem;
+    }
+    
+    .news-meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    
+    .news-title {
+      color: var(--primary-orange);
+      margin-bottom: 1rem;
+    }
+    
+    .swiper {
+      width: 100%;
+      padding-bottom: 3rem;
+    }
+    
+    .swiper-slide {
+      height: auto;
+    }
+    
+    .filter-bar {
+      background-color: var(--bg-primary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="/" class="navbar-brand">SorSU NSTP Hub</a>
+        <ul class="navbar-nav">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/concern" class="nav-link">Report Concern</a></li>
+          <li><a href="/gwa-calculator" class="nav-link">GWA Calculator</a></li>
+          <li><a href="/login" class="nav-link">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>News & Updates</h1>
+      <p>Stay informed with the latest NSTP announcements</p>
+    </div>
+  </section>
+
+  <!-- News Section -->
+  <section class="news-section">
+    <div class="container">
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <label style="font-weight: 600;">Filter by Campus:</label>
+        <select id="campusFilter" class="form-select" style="max-width: 300px;">
+          <option value="">All Campuses</option>
+        </select>
+      </div>
+
+      <!-- Featured News Carousel -->
+      <h2 class="mb-4">Featured News</h2>
+      <div class="swiper mb-4" id="featuredSwiper">
+        <div class="swiper-wrapper" id="featuredNews">
+          <!-- Featured news will be loaded here -->
+        </div>
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+
+      <!-- All News -->
+      <h2 class="mb-4">All News</h2>
+      <div id="newsList">
+        <div style="text-align: center; padding: 3rem;">
+          <div class="spinner"></div>
+          <p style="margin-top: 1rem; color: var(--text-muted);">Loading news...</p>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="text-center mt-4" id="pagination" style="display: none;">
+        <button class="btn btn-secondary" id="prevPage" onclick="loadPrevPage()">Previous</button>
+        <span style="margin: 0 1rem;" id="pageInfo">Page 1</span>
+        <button class="btn btn-secondary" id="nextPage" onclick="loadNextPage()">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Sorsogon State University - NSTP Service Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentCampus = '';
+
+    // Initialize Swiper
+    const swiper = new Swiper('#featuredSwiper', {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 2,
+        },
+        1024: {
+          slidesPerView: 3,
+        }
+      }
+    });
+
+    // Load campuses for filter
+    async function loadCampusFilter() {
+      try {
+        const data = await apiRequest('/campuses');
+        const select = document.getElementById('campusFilter');
+        
+        if (data.campuses) {
+          data.campuses.forEach(campus => {
+            const option = document.createElement('option');
+            option.value = campus.id;
+            option.textContent = campus.name;
+            select.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load campuses:', error);
+      }
+    }
+
+    // Load news
+    async function loadNews(page = 1) {
+      try {
+        let url = `/news?page=${page}&limit=6`;
+        if (currentCampus) {
+          url += `&campusId=${currentCampus}`;
+        }
+
+        const data = await apiRequest(url);
+        
+        if (data.news && data.news.length > 0) {
+          displayNews(data.news);
+          
+          // Update pagination
+          if (data.pagination) {
+            currentPage = data.pagination.page;
+            totalPages = data.pagination.totalPages;
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('pagination').style.display = totalPages > 1 ? 'block' : 'none';
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages;
+          }
+        } else {
+          document.getElementById('newsList').innerHTML = `
+            <div style="text-align: center; padding: 3rem;">
+              <p style="font-size: 1.25rem; color: var(--text-muted);">No news available</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Failed to load news:', error);
+        document.getElementById('newsList').innerHTML = `
+          <div style="text-align: center; padding: 3rem;">
+            <p style="color: var(--status-danger);">Failed to load news</p>
+          </div>
+        `;
+      }
+    }
+
+    function displayNews(newsList) {
+      const newsListDiv = document.getElementById('newsList');
+      
+      newsListDiv.innerHTML = newsList.map(news => {
+        const date = new Date(news.publishedAt || news.createdAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        return `
+          <div class="news-card">
+            ${news.imageUrl ? 
+              `<img src="${news.imageUrl}" alt="${news.title}" class="news-image">` :
+              `<div class="news-image">📰</div>`
+            }
+            <div class="news-content">
+              <div class="news-meta">
+                <span>📅 ${date}</span>
+                ${news.campus ? `<span>🏫 ${news.campus.name}</span>` : ''}
+              </div>
+              <h3 class="news-title">${news.title}</h3>
+              <p>${news.content.substring(0, 200)}${news.content.length > 200 ? '...' : ''}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadPrevPage() {
+      if (currentPage > 1) {
+        loadNews(currentPage - 1);
+      }
+    }
+
+    function loadNextPage() {
+      if (currentPage < totalPages) {
+        loadNews(currentPage + 1);
+      }
+    }
+
+    // Campus filter change
+    document.getElementById('campusFilter').addEventListener('change', (e) => {
+      currentCampus = e.target.value;
+      currentPage = 1;
+      loadNews(1);
+    });
+
+    // Load on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCampusFilter();
+      loadNews(1);
+    });
+  </script>
+</body>
+</html>
